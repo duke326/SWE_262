@@ -7,6 +7,8 @@ import java.io.*;
 import java.util.*;
 
 public class Milestone1 {
+    public static int FACTOR = 4;
+
     public static void main(String[] args) throws IOException {
         //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="1 src/main/resources/xml1.xml"
         //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="2 src/main/resources/xml1.xml /catalog/book/0/author"
@@ -33,7 +35,7 @@ public class Milestone1 {
         {
             case "1" :
                 System.out.println("Demo Question 1");
-                writeToDisk(jsonObj.toString());
+                writeToDisk(jsonObj.toString(FACTOR));
                 break;
             case "2" :
                 System.out.println("Demo Question 2");
@@ -95,7 +97,7 @@ public class Milestone1 {
     public static void  writeToDisk (String jsonObject) throws IOException {
         File file=new File("src/main/resources/output.json");
         BufferedWriter bw=new BufferedWriter(new FileWriter(file));
-        bw.write(jsonObject.toString());
+        bw.write(jsonObject);
         bw.close();
 
     }
@@ -121,8 +123,8 @@ public class Milestone1 {
         try {
             JSONObject jsonObj = load(filename);
             analysisJson(jsonObj);
-            if(jsonObj!=null) writeToDisk(jsonObj.toString());
-            System.out.println(jsonObj);
+            if(jsonObj!=null) writeToDisk(jsonObj.toString(FACTOR));
+            System.out.println(jsonObj.toString(FACTOR));
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -153,6 +155,7 @@ public class Milestone1 {
             JSONObject jsonObject = (JSONObject)object;
             jsonObject.put(key,replaceObj);
         }
+        writeToDisk(jsonObj.toString(FACTOR));
         System.out.println(query(path, jsonObj).toString());
     }
 
