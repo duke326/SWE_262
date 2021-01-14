@@ -1,5 +1,5 @@
 # SWE_262
-Created by Lai Wang and Yu Sun 
+Created by Lai Wang and Yu Sun </br>
 Output file is \SWE262\src\main\resources
 Small XML file is \SWE262\src\main\resources
 Example Demo Command Line :
