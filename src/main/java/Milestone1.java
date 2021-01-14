@@ -162,7 +162,7 @@ public class Milestone1 {
 
 
     public static void  analysisJson(Object objJson){
-        //如果obj为json数组
+        //if obj is jsonarray
         Set<String> deleteSet = new HashSet();
         if(objJson instanceof JSONArray){
             JSONArray objArray = (JSONArray)objJson;
@@ -170,7 +170,7 @@ public class Milestone1 {
                 analysisJson(objArray.get(i));
             }
         }
-        //如果为json对象
+        //if obj is jsonobject
         else if(objJson instanceof JSONObject){
             JSONObject jsonObject = (JSONObject)objJson;
             Iterator it = jsonObject.keys();
@@ -178,20 +178,20 @@ public class Milestone1 {
                 String key = it.next().toString();
                 Object object = jsonObject.get(key);
 
-                //如果得到的是数组
+                //if we get array
                 if(object instanceof JSONArray){
                     jsonObject.put("swe262_"+key,object);
                     jsonObject.remove(key);
                     JSONArray objArray = (JSONArray)object;
                     analysisJson(objArray);
                 }
-                //如果key中是一个json对象
+                //if we get the jsonobjet
                 else if(object instanceof JSONObject){
                     jsonObject.put("swe262_"+key,object);
                     jsonObject.remove(key);
                     analysisJson((JSONObject)object);
                 }
-                //如果key中是其他
+                //String elements
                 else{
                     deleteSet.add(key);
                 }
