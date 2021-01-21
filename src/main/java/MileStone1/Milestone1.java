@@ -1,3 +1,5 @@
+package MileStone1;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
@@ -10,11 +12,11 @@ public class Milestone1 {
     public static int FACTOR = 4;
 
     public static void main(String[] args) throws IOException {
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="1 src/main/resources/xml1.xml"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="2 src/main/resources/xml1.xml /catalog/book/0/author"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="3 src/main/resources/xml1.xml /catalog/book/0"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="4 src/main/resources/xml1.xml"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="5 src/main/resources/xml1.xml /catalog/book/0/author"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="1 src/main/resources/xml1.xml"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="2 src/main/resources/xml1.xml /catalog/book/0/author"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="3 src/main/resources/xml1.xml /catalog/book/0"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="4 src/main/resources/xml1.xml"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="5 src/main/resources/xml1.xml /catalog/book/0/author"
         demo(args);
     }
 
