@@ -1,20 +1,24 @@
+package MileStone2.MileStone;
+
+
+import MileStone2.json.*;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
-import org.json.*;
+
+
 
 import java.io.*;
 import java.util.*;
 
-public class Milestone1 {
+public class Milestone2 {
     public static int FACTOR = 4;
 
     public static void main(String[] args) throws IOException {
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="1 src/main/resources/xml1.xml"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="2 src/main/resources/xml1.xml /catalog/book/0/author"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="3 src/main/resources/xml1.xml /catalog/book/0"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="4 src/main/resources/xml1.xml"
-        //mvn exec:java -Dexec.mainClass="Milestone1" -Dexec.args="5 src/main/resources/xml1.xml /catalog/book/0/author"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="1 src/main/resources/xml1.xml"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="2 src/main/resources/xml1.xml /catalog/book/0/author"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="3 src/main/resources/xml1.xml /catalog/book/0"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="4 src/main/resources/xml1.xml"
+        //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="5 src/main/resources/xml1.xml /catalog/book/0/author"
         demo(args);
     }
 
@@ -93,25 +97,6 @@ public class Milestone1 {
         }
     }
 
-    public static JSONObject load3(Reader reader){
-        try{
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            String curLine;
-            StringBuilder sb = new StringBuilder();
-            while((curLine=bufferedReader.readLine())!=null){
-                sb.append(curLine);
-                sb.append("\n");
-            }
-            String text = sb.toString();
-            //System.out.println(text);
-            JSONObject jsonObject = XML.toJSONObject(text);
-            return jsonObject;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     //Question 1 ///
     public static void  writeToDisk (String jsonObject) throws IOException {
         File file=new File("src/main/resources/output.json");
@@ -146,38 +131,13 @@ public class Milestone1 {
             System.out.println(jsonObj.toString(FACTOR));
         }catch (Exception ex){
             ex.printStackTrace();
-        }
-    }
 
-    static JSONObject toJSONObject(Reader reader, JSONPointer path, JSONObject replacement){
-        JSONObject jsonObj = load3(reader);
-
-        JSONObject replaceObj = replacement;
-        JSONPointer jsonPointer =path;
-        String strPath = jsonPointer.toString();
-        String[] nodes = strPath.split("/");
-        String key = nodes[nodes.length-1];
-
-        Object object = jsonPointer.queryFrom(jsonObj);
-        if(object instanceof JSONArray){
-            JSONArray objArray = (JSONArray)object;
-            int index = Integer.parseInt(key);
-            objArray.put(index,replaceObj);
-        }else if(object instanceof JSONObject){
-            JSONObject jsonObject = (JSONObject)object;
-            jsonObject.put(key,replaceObj);
         }
-        try{
-            writeToDisk(jsonObj.toString(FACTOR));
-        }catch (Exception ex){
-        }
-        return jsonObj;
     }
 
     // Question 5
     public static void question5(String filename, String path) throws IOException {
         JSONObject jsonObj = load2(filename);
-
         String[] nodes = path.split("/");
         //get replace obj
         String jsonStr = "{\"id\":1,\"age\":2,\"name\":\"zhang\"}";
@@ -207,7 +167,7 @@ public class Milestone1 {
 
 
     public static void  analysisJson(Object objJson){
-        //if obj is jsonarray
+        //如果obj为json数组
         Set<String> deleteSet = new HashSet();
         if(objJson instanceof JSONArray){
             JSONArray objArray = (JSONArray)objJson;
@@ -215,7 +175,7 @@ public class Milestone1 {
                 analysisJson(objArray.get(i));
             }
         }
-        //if obj is jsonobject
+        //如果为json对象
         else if(objJson instanceof JSONObject){
             JSONObject jsonObject = (JSONObject)objJson;
             Iterator it = jsonObject.keys();
@@ -223,20 +183,20 @@ public class Milestone1 {
                 String key = it.next().toString();
                 Object object = jsonObject.get(key);
 
-                //if we get array
+                //如果得到的是数组
                 if(object instanceof JSONArray){
                     jsonObject.put("swe262_"+key,object);
                     jsonObject.remove(key);
                     JSONArray objArray = (JSONArray)object;
                     analysisJson(objArray);
                 }
-                //if we get the jsonobjet
+                //如果key中是一个json对象
                 else if(object instanceof JSONObject){
                     jsonObject.put("swe262_"+key,object);
                     jsonObject.remove(key);
                     analysisJson((JSONObject)object);
                 }
-                //String elements
+                //如果key中是其他
                 else{
                     deleteSet.add(key);
                 }
