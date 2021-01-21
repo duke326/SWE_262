@@ -93,6 +93,25 @@ public class Milestone1 {
         }
     }
 
+    public static JSONObject load3(Reader reader){
+        try{
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            String curLine;
+            StringBuilder sb = new StringBuilder();
+            while((curLine=bufferedReader.readLine())!=null){
+                sb.append(curLine);
+                sb.append("\n");
+            }
+            String text = sb.toString();
+            //System.out.println(text);
+            JSONObject jsonObject = XML.toJSONObject(text);
+            return jsonObject;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     //Question 1 ///
     public static void  writeToDisk (String jsonObject) throws IOException {
         File file=new File("src/main/resources/output.json");
@@ -130,9 +149,35 @@ public class Milestone1 {
         }
     }
 
+    static JSONObject toJSONObject(Reader reader, JSONPointer path, JSONObject replacement){
+        JSONObject jsonObj = load3(reader);
+
+        JSONObject replaceObj = replacement;
+        JSONPointer jsonPointer =path;
+        String strPath = jsonPointer.toString();
+        String[] nodes = strPath.split("/");
+        String key = nodes[nodes.length-1];
+
+        Object object = jsonPointer.queryFrom(jsonObj);
+        if(object instanceof JSONArray){
+            JSONArray objArray = (JSONArray)object;
+            int index = Integer.parseInt(key);
+            objArray.put(index,replaceObj);
+        }else if(object instanceof JSONObject){
+            JSONObject jsonObject = (JSONObject)object;
+            jsonObject.put(key,replaceObj);
+        }
+        try{
+            writeToDisk(jsonObj.toString(FACTOR));
+        }catch (Exception ex){
+        }
+        return jsonObj;
+    }
+
     // Question 5
     public static void question5(String filename, String path) throws IOException {
         JSONObject jsonObj = load2(filename);
+
         String[] nodes = path.split("/");
         //get replace obj
         String jsonStr = "{\"id\":1,\"age\":2,\"name\":\"zhang\"}";
