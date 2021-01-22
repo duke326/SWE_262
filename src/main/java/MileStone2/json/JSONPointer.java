@@ -1,9 +1,10 @@
 package MileStone2.json;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONPointerException;
+import MileStone2.json.*;
+import MileStone2.json.JSONArray;
+import MileStone2.json.JSONException;
+import MileStone2.json.JSONObject;
+import MileStone2.json.JSONPointerException;
 
 import static java.lang.String.format;
 
@@ -200,7 +201,7 @@ public class JSONPointer {
 
     /**
      * Evaluates this JSON Pointer on the given {@code document}. The {@code document}
-     * is usually a {@link org.json.JSONObject} or a {@link org.json.JSONArray} instance, but the empty
+     * is usually a {@link MileStone2.json.JSONObject} or a {@link MileStone2.json.JSONArray} instance, but the empty
      * JSON Pointer ({@code ""}) can be evaluated on any JSON values and in such case the
      * returned value will be {@code document} itself. 
      * 
@@ -214,9 +215,9 @@ public class JSONPointer {
         }
         Object current = document;
         for (String token : this.refTokens) {
-            if (current instanceof org.json.JSONObject) {
+            if (current instanceof MileStone2.json.JSONObject) {
                 current = ((JSONObject) current).opt(unescape(token));
-            } else if (current instanceof org.json.JSONArray) {
+            } else if (current instanceof MileStone2.json.JSONArray) {
                 current = readByIndexToken(current, token);
             } else {
                 throw new JSONPointerException(format(
@@ -237,7 +238,7 @@ public class JSONPointer {
     private static Object readByIndexToken(Object current, String indexToken) throws JSONPointerException {
         try {
             int index = Integer.parseInt(indexToken);
-            org.json.JSONArray currentArr = (JSONArray) current;
+            MileStone2.json.JSONArray currentArr = (JSONArray) current;
             if (index >= currentArr.length()) {
                 throw new JSONPointerException(format("index %s is out of bounds - the array has %d elements", indexToken,
                         Integer.valueOf(currentArr.length())));

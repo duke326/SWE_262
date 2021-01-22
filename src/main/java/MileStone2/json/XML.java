@@ -618,6 +618,47 @@ public class XML {
 
     }
 
+    public static JSONObject toJSONObject(Reader reader, JSONPointer path,JSONObject replacement) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        String curLine;
+        StringBuilder sb = new StringBuilder();
+        while((curLine=bufferedReader.readLine())!=null){
+            sb.append(curLine);
+            sb.append("\n");
+        }
+        String text = sb.toString();
+        JSONObject jsonObj=XML.toJSONObject(text);
+        JSONObject replaceObj = replacement;
+
+        String strPath = path.toString();
+        String[] nodes = strPath.split("/");
+        String key = nodes[nodes.length-1];
+        System.out.println(key);
+        StringBuilder rootPath = new StringBuilder();
+        for(int i = 1; i<nodes.length-1;i++ ){
+            rootPath.append("/"+nodes[i]);
+        }
+        System.out.println(rootPath);
+        JSONPointer jsonPointer =new JSONPointer(rootPath.toString());
+        Object object = jsonPointer.queryFrom(jsonObj);
+        if(object instanceof JSONArray){
+            JSONArray objArray = (JSONArray)object;
+            int index = Integer.parseInt(key);
+            objArray.put(index,replaceObj);
+        }else if(object instanceof JSONObject){
+            JSONObject jsonObject = (JSONObject)object;
+            jsonObject.put(key,replaceObj);
+        }
+        try{
+            Milestone2.writeToDisk(jsonObj.toString(4));
+//            System.out.println(query(strPath, jsonObj).toString());
+        }catch (Exception ex){
+        }
+
+        return jsonObj;
+
+    }
+
 
 
     /**

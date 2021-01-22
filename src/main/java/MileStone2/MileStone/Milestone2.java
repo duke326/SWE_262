@@ -19,7 +19,20 @@ public class Milestone2 {
         //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="3 src/main/resources/xml1.xml /catalog/book/0"
         //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="4 src/main/resources/xml1.xml"
         //mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="5 src/main/resources/xml1.xml /catalog/book/0/author"
-        demo(args);
+        //demo(args);
+        test();
+    }
+
+    public static void test() throws IOException{
+        Reader reader = new FileReader(new File("src/main/resources/xml1.xml"));
+        String path = "/catalog/book/0/author";
+        JSONPointer jsonPointer =new JSONPointer(path);
+        String jsonStr = "{\"id\":1,\"age\":2,\"name\":\"zhang\"}";
+        JSONObject replaceObj = new JSONObject(jsonStr);
+        System.out.println(jsonPointer.toString());
+        JSONObject object = XML.toJSONObject(reader,jsonPointer,replaceObj);
+//        JSONObject object2 = XML.toJSONObject(reader,jsonPointer);
+        System.out.println(object.toString(FACTOR));
     }
 
     public static void demo(String[] args) throws IOException{
@@ -97,6 +110,7 @@ public class Milestone2 {
         }
     }
 
+
     //Question 1 ///
     public static void  writeToDisk (String jsonObject) throws IOException {
         File file=new File("src/main/resources/output.json");
@@ -161,9 +175,8 @@ public class Milestone2 {
             jsonObject.put(key,replaceObj);
         }
         writeToDisk(jsonObj.toString(FACTOR));
-        System.out.println(query(path, jsonObj).toString());
+        //System.out.println(query(path, jsonObj).toString());
     }
-
 
 
     public static void  analysisJson(Object objJson){
@@ -208,6 +221,8 @@ public class Milestone2 {
             }
         }
     }
+
+
     public static List<String> readArg(String[] args){
         List<String > res=new ArrayList<>();
         for(String str:args){
