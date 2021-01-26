@@ -602,6 +602,7 @@ public class XML {
         return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
     }
 
+
     public static JSONObject toJSONObject(Reader reader, JSONPointer path) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(reader);
         String curLine;
@@ -628,6 +629,7 @@ public class XML {
         }
         String text = sb.toString();
         JSONObject jsonObj=XML.toJSONObject(text);
+
         JSONObject replaceObj = replacement;
 
         String strPath = path.toString();
@@ -657,7 +659,22 @@ public class XML {
 
         return jsonObj;
 
+
     }
+
+    public static JSONObject toJSONObjectTest(Reader reader){
+
+        JSONObject jo = new JSONObject();
+        XMLTokener x = new XMLTokener(reader);
+        while (x.more()) {
+            x.skipPast("<");
+            if(x.more()) {
+                parse(x, jo, null, XMLParserConfiguration.ORIGINAL);
+            }
+        }
+        return jo;
+    }
+
 
 
 
