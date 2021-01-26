@@ -9,8 +9,8 @@
         <module name="SWE262" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="15">
-      <module name="SWE262" target="11" />
+    <bytecodeTargetLevel>
+      <module name="SWE262" target="9" />
     </bytecodeTargetLevel>
   </component>
 </project>
