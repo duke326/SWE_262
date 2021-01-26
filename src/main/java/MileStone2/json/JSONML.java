@@ -24,11 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
-import org.json.XMLTokener;
+import MileStone2.json.JSONArray;
+import MileStone2.json.JSONException;
+import MileStone2.json.JSONObject;
+import MileStone2.json.XML;
+import MileStone2.json.XMLTokener;
 
 /**
  * This provides static methods to convert an XML text into a JSONArray or
@@ -75,10 +75,10 @@ public class JSONML {
                 throw x.syntaxError("Bad XML");
             }
             token = x.nextContent();
-            if (token == org.json.XML.LT) {
+            if (token == MileStone2.json.XML.LT) {
                 token = x.nextToken();
                 if (token instanceof Character) {
-                    if (token == org.json.XML.SLASH) {
+                    if (token == MileStone2.json.XML.SLASH) {
 
 // Close tag </
 
@@ -88,11 +88,11 @@ public class JSONML {
                                     "Expected a closing name instead of '" +
                                     token + "'.");
                         }
-                        if (x.nextToken() != org.json.XML.GT) {
+                        if (x.nextToken() != MileStone2.json.XML.GT) {
                             throw x.syntaxError("Misshaped close tag");
                         }
                         return token;
-                    } else if (token == org.json.XML.BANG) {
+                    } else if (token == MileStone2.json.XML.BANG) {
 
 // <!
 
@@ -118,14 +118,14 @@ public class JSONML {
                                 token = x.nextMeta();
                                 if (token == null) {
                                     throw x.syntaxError("Missing '>' after '<!'.");
-                                } else if (token == org.json.XML.LT) {
+                                } else if (token == MileStone2.json.XML.LT) {
                                     i += 1;
-                                } else if (token == org.json.XML.GT) {
+                                } else if (token == MileStone2.json.XML.GT) {
                                     i -= 1;
                                 }
                             } while (i > 0);
                         }
-                    } else if (token == org.json.XML.QUEST) {
+                    } else if (token == MileStone2.json.XML.QUEST) {
 
 // <?
 
@@ -173,12 +173,12 @@ public class JSONML {
                             throw x.syntaxError("Reserved attribute.");
                         }
                         token = x.nextToken();
-                        if (token == org.json.XML.EQ) {
+                        if (token == MileStone2.json.XML.EQ) {
                             token = x.nextToken();
                             if (!(token instanceof String)) {
                                 throw x.syntaxError("Missing value");
                             }
-                            newjo.accumulate(attribute, keepStrings ? ((String)token) : org.json.XML.stringToValue((String)token));
+                            newjo.accumulate(attribute, keepStrings ? ((String)token) : MileStone2.json.XML.stringToValue((String)token));
                             token = null;
                         } else {
                             newjo.accumulate(attribute, "");
@@ -190,8 +190,8 @@ public class JSONML {
 
 // Empty tag <.../>
 
-                    if (token == org.json.XML.SLASH) {
-                        if (x.nextToken() != org.json.XML.GT) {
+                    if (token == MileStone2.json.XML.SLASH) {
+                        if (x.nextToken() != MileStone2.json.XML.GT) {
                             throw x.syntaxError("Misshaped tag");
                         }
                         if (ja == null) {
@@ -204,7 +204,7 @@ public class JSONML {
 // Content, between <...> and </...>
 
                     } else {
-                        if (token != org.json.XML.GT) {
+                        if (token != MileStone2.json.XML.GT) {
                             throw x.syntaxError("Misshaped tag");
                         }
                         closeTag = (String)parse(x, arrayForm, newja, keepStrings);
@@ -229,7 +229,7 @@ public class JSONML {
             } else {
                 if (ja != null) {
                     ja.put(token instanceof String
-                        ? keepStrings ? org.json.XML.unescape((String)token) : org.json.XML.stringToValue((String)token)
+                        ? keepStrings ? MileStone2.json.XML.unescape((String)token) : MileStone2.json.XML.stringToValue((String)token)
                         : token);
                 }
             }
@@ -408,8 +408,8 @@ public class JSONML {
 // Emit <tagName
 
         tagName = ja.getString(0);
-        org.json.XML.noSpace(tagName);
-        tagName = org.json.XML.escape(tagName);
+        MileStone2.json.XML.noSpace(tagName);
+        tagName = MileStone2.json.XML.escape(tagName);
         sb.append('<');
         sb.append(tagName);
 
@@ -423,13 +423,13 @@ public class JSONML {
             // Don't use the new entrySet API to maintain Android support
             for (final String key : jo.keySet()) {
                 final Object value = jo.opt(key);
-                org.json.XML.noSpace(key);
+                MileStone2.json.XML.noSpace(key);
                 if (value != null) {
                     sb.append(' ');
-                    sb.append(org.json.XML.escape(key));
+                    sb.append(MileStone2.json.XML.escape(key));
                     sb.append('=');
                     sb.append('"');
-                    sb.append(org.json.XML.escape(value.toString()));
+                    sb.append(MileStone2.json.XML.escape(value.toString()));
                     sb.append('"');
                 }
             }
@@ -450,7 +450,7 @@ public class JSONML {
                 i += 1;
                 if (object != null) {
                     if (object instanceof String) {
-                        sb.append(org.json.XML.escape(object.toString()));
+                        sb.append(MileStone2.json.XML.escape(object.toString()));
                     } else if (object instanceof JSONObject) {
                         sb.append(toString((JSONObject)object));
                     } else if (object instanceof JSONArray) {
@@ -490,10 +490,10 @@ public class JSONML {
 
         tagName = jo.optString("tagName");
         if (tagName == null) {
-            return org.json.XML.escape(jo.toString());
+            return MileStone2.json.XML.escape(jo.toString());
         }
-        org.json.XML.noSpace(tagName);
-        tagName = org.json.XML.escape(tagName);
+        MileStone2.json.XML.noSpace(tagName);
+        tagName = MileStone2.json.XML.escape(tagName);
         sb.append('<');
         sb.append(tagName);
 
@@ -502,14 +502,14 @@ public class JSONML {
         // Don't use the new entrySet API to maintain Android support
         for (final String key : jo.keySet()) {
             if (!"tagName".equals(key) && !"childNodes".equals(key)) {
-                org.json.XML.noSpace(key);
+                MileStone2.json.XML.noSpace(key);
                 value = jo.opt(key);
                 if (value != null) {
                     sb.append(' ');
-                    sb.append(org.json.XML.escape(key));
+                    sb.append(MileStone2.json.XML.escape(key));
                     sb.append('=');
                     sb.append('"');
-                    sb.append(org.json.XML.escape(value.toString()));
+                    sb.append(MileStone2.json.XML.escape(value.toString()));
                     sb.append('"');
                 }
             }

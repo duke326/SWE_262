@@ -24,9 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import org.json.JSONException;
-import org.json.JSONTokener;
-import org.json.XML;
+import MileStone2.json.JSONException;
+import MileStone2.json.JSONTokener;
+import MileStone2.json.XML;
 
 import java.io.Reader;
 
@@ -46,11 +46,11 @@ public class XMLTokener extends JSONTokener {
 
    static {
        entity = new java.util.HashMap<String, Character>(8);
-       entity.put("amp",  org.json.XML.AMP);
-       entity.put("apos", org.json.XML.APOS);
-       entity.put("gt",   org.json.XML.GT);
-       entity.put("lt",   org.json.XML.LT);
-       entity.put("quot", org.json.XML.QUOT);
+       entity.put("amp",  MileStone2.json.XML.AMP);
+       entity.put("apos", MileStone2.json.XML.APOS);
+       entity.put("gt",   MileStone2.json.XML.GT);
+       entity.put("lt",   MileStone2.json.XML.LT);
+       entity.put("quot", MileStone2.json.XML.QUOT);
    }
 
     /**
@@ -112,7 +112,7 @@ public class XMLTokener extends JSONTokener {
             return null;
         }
         if (c == '<') {
-            return org.json.XML.LT;
+            return MileStone2.json.XML.LT;
         }
         sb = new StringBuilder();
         for (;;) {
@@ -211,17 +211,17 @@ public class XMLTokener extends JSONTokener {
         case 0:
             throw syntaxError("Misshaped meta tag");
         case '<':
-            return org.json.XML.LT;
+            return MileStone2.json.XML.LT;
         case '>':
-            return org.json.XML.GT;
+            return MileStone2.json.XML.GT;
         case '/':
-            return org.json.XML.SLASH;
+            return MileStone2.json.XML.SLASH;
         case '=':
-            return org.json.XML.EQ;
+            return MileStone2.json.XML.EQ;
         case '!':
-            return org.json.XML.BANG;
+            return MileStone2.json.XML.BANG;
         case '?':
-            return org.json.XML.QUEST;
+            return MileStone2.json.XML.QUEST;
         case '"':
         case '\'':
             q = c;
@@ -282,13 +282,13 @@ public class XMLTokener extends JSONTokener {
         case '<':
             throw syntaxError("Misplaced '<'");
         case '>':
-            return org.json.XML.GT;
+            return MileStone2.json.XML.GT;
         case '/':
-            return org.json.XML.SLASH;
+            return MileStone2.json.XML.SLASH;
         case '=':
-            return org.json.XML.EQ;
+            return MileStone2.json.XML.EQ;
         case '!':
-            return org.json.XML.BANG;
+            return MileStone2.json.XML.BANG;
         case '?':
             return XML.QUEST;
 

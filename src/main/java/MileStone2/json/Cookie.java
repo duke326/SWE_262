@@ -1,8 +1,8 @@
 package MileStone2.json;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import MileStone2.json.JSONException;
+import MileStone2.json.JSONObject;
+import MileStone2.json.JSONTokener;
 
 import java.util.Locale;
 

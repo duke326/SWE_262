@@ -24,8 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import MileStone2.json.JSONException;
+import MileStone2.json.JSONObject;
 
 import java.util.Enumeration;
 import java.util.Properties;

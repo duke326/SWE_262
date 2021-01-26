@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import org.json.JSONWriter;
+import MileStone2.json.JSONWriter;
 
 import java.io.StringWriter;
 

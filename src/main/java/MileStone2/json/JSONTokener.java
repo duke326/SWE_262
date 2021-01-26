@@ -1,8 +1,8 @@
 package MileStone2.json;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import MileStone2.json.JSONArray;
+import MileStone2.json.JSONException;
+import MileStone2.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -432,7 +432,7 @@ public class JSONTokener {
             return this.nextString(c);
         case '{':
             this.back();
-            return new org.json.JSONObject(this);
+            return new MileStone2.json.JSONObject(this);
         case '[':
             this.back();
             return new JSONArray(this);

@@ -24,7 +24,7 @@ package MileStone2.json;
  SOFTWARE.
  */
 
-import org.json.*;
+import MileStone2.json.*;
 
 import java.io.IOException;
 import java.io.StringWriter;

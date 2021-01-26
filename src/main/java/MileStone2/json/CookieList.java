@@ -24,10 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-import org.json.Cookie;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import MileStone2.json.Cookie;
+import MileStone2.json.JSONException;
+import MileStone2.json.JSONObject;
+import MileStone2.json.JSONTokener;
 
 /**
  * Convert a web browser cookie list string to a JSONObject and back.
@@ -53,9 +53,9 @@ public class CookieList {
         JSONObject jo = new JSONObject();
         JSONTokener x = new JSONTokener(string);
         while (x.more()) {
-            String name = org.json.Cookie.unescape(x.nextTo('='));
+            String name = MileStone2.json.Cookie.unescape(x.nextTo('='));
             x.next('=');
-            jo.put(name, org.json.Cookie.unescape(x.nextTo(';')));
+            jo.put(name, MileStone2.json.Cookie.unescape(x.nextTo(';')));
             x.next();
         }
         return jo;
@@ -80,7 +80,7 @@ public class CookieList {
                 if (b) {
                     sb.append(';');
                 }
-                sb.append(org.json.Cookie.escape(key));
+                sb.append(MileStone2.json.Cookie.escape(key));
                 sb.append("=");
                 sb.append(Cookie.escape(value.toString()));
                 b = true;
