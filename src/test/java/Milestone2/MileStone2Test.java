@@ -61,7 +61,7 @@ public class MileStone2Test {
      * Valid XML to JSONObject
      */
     @Test
-    public void shouldHandleSimpleXML() {
+    public void shouldHandleSimpleXML() throws IOException {
         String xmlStr =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
                         "<addresses xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""+
@@ -82,48 +82,58 @@ public class MileStone2Test {
                         "</addresses>";
 
         String expectedStr =
-                "{\"addresses\":{\"address\":{\"street\":\"[CDATA[Baker street 5]\","+
+                "{\"street\":\"[CDATA[Baker street 5]\","+
                         "\"name\":\"Joe Tester\",\"NothingHere\":\"\",TrueValue:true,\n"+
                         "\"FalseValue\":false,\"NullValue\":null,\"PositiveValue\":42,\n"+
                         "\"NegativeValue\":-23,\"DoubleValue\":-23.45,\"Nan\":-23x.45,\n"+
                         "\"ArrayOfNum\":\"1, 2, 3, 4.1, 5.2\"\n"+
+                        "}";
+
+        String path = "/addresses/address";
+        JSONPointer jsonPointer =new JSONPointer(path);
+        compareReaderToJSONObject1(xmlStr, expectedStr,jsonPointer);
+    }
+
+    @Test
+    public void shouldHandleSimpleXML2() throws IOException {
+        String xmlStr =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"+
+                        "<addresses xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""+
+                        " xsi:noNamespaceSchemaLocation='test.xsd'>\n"+
+                        " <address>\n"+
+                        " <ArrayOfNum>1, 2, 3, 4.1, 5.2</ArrayOfNum>\n"+
+                        " </address>\n"+
+                        "</addresses>";
+        String replaceStr = "{\"ArrayOfNum\":\"1, 2, 3, 4.1, 5.2\"}";
+        String expectedStr =
+                "{\"addresses\":{\"address\":{\"ArrayOfNum\":\"1, 2, 3, 4.1, 5.2\"\n"+
                         "},\"xsi:noNamespaceSchemaLocation\":"+
                         "\"test.xsd\",\"xmlns:xsi\":\"http://www.w3.org/2001/"+
                         "XMLSchema-instance\"}}";
-
-//        compareStringToJSONObject(xmlStr, expectedStr);
-        compareReaderToJSONObject(xmlStr, expectedStr);
-//        compareFileToJSONObject(xmlStr, expectedStr);
+        JSONPointer jsonPointer = new JSONPointer("/root/item");
+        compareReaderToJSONObject2(xmlStr, replaceStr, expectedStr, jsonPointer);
     }
 
-    private void compareReaderToJSONObject(String xmlStr, String expectedStr) {
+
+    private void compareReaderToJSONObject1(String xmlStr, String expectedStr, JSONPointer jsonPointer) throws IOException {
         JSONObject expectedJsonObject = new JSONObject(expectedStr);
         Reader reader = new StringReader(xmlStr);
-        JSONObject jsonObject = XML.toJSONObject(reader);
+        JSONObject jsonObject = XML.toJSONObject(reader,jsonPointer);
+        Util.compareActualVsExpectedJsonObjects(jsonObject,expectedJsonObject);
+        System.out.println(jsonObject.toString(FACTOR));
+
+    }
+
+    private void compareReaderToJSONObject2(String xmlStr, String replaceStr, String expectedStr , JSONPointer jsonPointer) throws IOException {
+        JSONObject expectedJsonObject = new JSONObject(expectedStr);
+        JSONObject replaceObj = new JSONObject(replaceStr);
+        Reader reader = new StringReader(xmlStr);
+        JSONObject jsonObject = XML.toJSONObject(reader,jsonPointer,replaceObj);
+        System.out.println(jsonObject.toString(FACTOR));
         Util.compareActualVsExpectedJsonObjects(jsonObject,expectedJsonObject);
     }
 
-    private void compareReaderToJSONObject1(String xmlStr, String expectedStr) {
-        try{
-            System.out.println("1");
-            JSONObject expectedJsonObject = new JSONObject(expectedStr);
-            Reader reader = new StringReader(xmlStr);
-            String path = "/addresses/address";
-            JSONPointer jsonPointer =new JSONPointer(path);
-            JSONObject jsonObject = XML.toJSONObject(reader,jsonPointer);
-            Util.compareActualVsExpectedJsonObjects(jsonObject,expectedJsonObject);
-            System.out.println(jsonObject.toString(FACTOR));
-        }catch (Exception ex) {
-        }
 
-    }
 
-    private void compareReaderToJSONObject2(String xmlStr, String expectedStr) {
-        JSONObject expectedJsonObject = new JSONObject(expectedStr);
-        Reader reader = new StringReader(xmlStr);
-        String path = "/catalog/book/0";
-        JSONPointer jsonPointer =new JSONPointer(path);
-        JSONObject jsonObject = XML.toJSONObject(reader);
-        Util.compareActualVsExpectedJsonObjects(jsonObject,expectedJsonObject);
-    }
+
 }

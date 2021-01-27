@@ -604,15 +604,8 @@ public class XML {
 
 
     public static JSONObject toJSONObject(Reader reader, JSONPointer path) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        String curLine;
-        StringBuilder sb = new StringBuilder();
-        while((curLine=bufferedReader.readLine())!=null){
-            sb.append(curLine);
-            sb.append("\n");
-        }
-        String text = sb.toString();
-        JSONObject jsonObject=XML.toJSONObject(text);
+
+        JSONObject jsonObject=toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
         Object object=path.queryFrom(jsonObject);
         Milestone2.writeToDisk(object.toString());
         return (JSONObject) object;
@@ -620,18 +613,8 @@ public class XML {
     }
 
     public static JSONObject toJSONObject(Reader reader, JSONPointer path,JSONObject replacement) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        String curLine;
-        StringBuilder sb = new StringBuilder();
-        while((curLine=bufferedReader.readLine())!=null){
-            sb.append(curLine);
-            sb.append("\n");
-        }
-        String text = sb.toString();
-        JSONObject jsonObj=XML.toJSONObject(text);
-
+        JSONObject jsonObj=toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
         JSONObject replaceObj = replacement;
-
         String strPath = path.toString();
         String[] nodes = strPath.split("/");
         String key = nodes[nodes.length-1];
@@ -656,10 +639,7 @@ public class XML {
 //            System.out.println(query(strPath, jsonObj).toString());
         }catch (Exception ex){
         }
-
         return jsonObj;
-
-
     }
 
     public static JSONObject toJSONObjectTest(Reader reader){
