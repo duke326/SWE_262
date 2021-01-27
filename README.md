@@ -24,7 +24,7 @@ Cannot process the large file(OutOfMemory:Java Heap Space)
   ```java
   public static JSONObject toJSONObject(Reader reader, JSONPointer path) throws IOException {
   
-          JSONObject jsonObject=toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
+          JSONObject jsonObject=toJSONObject2(reader, XMLParserConfiguration.ORIGINAL);
           Object object=path.queryFrom(jsonObject);
           Milestone2.writeToDisk(object.toString());
           return (JSONObject) object;
@@ -33,6 +33,58 @@ Cannot process the large file(OutOfMemory:Java Heap Space)
   ```
 
   which does, inside the library, the same thing that task 2 of milestone 1 did in client code, before writing to disk. Being this done inside the library, you should be able to do it more efficiently. Specifically, you shouldn't need to read the entire XML file, as you can stop parsing it as soon as you find the object in question.
+
+  
+
+  ### In order to improve our program's Performance: we implement the method  parase2 and toJSONObject2
+
+  ```java
+  private static boolean parse2(XMLTokener x, JSONObject context,JSONPointer pointer, String name, XMLParserConfiguration config) throws JSONException {
+                          .....
+                          } else if (token == LT) {
+                              // Nested element
+                              if (parse(x, jsonObject, tagName, config)) {
+                                  if (jsonObject.length() == 0) {
+                                      context.accumulate(tagName, "");
+                                  } else if (jsonObject.length() == 1
+                                          && jsonObject.opt(config.getcDataTagName()) != null) {
+                                      context.accumulate(tagName, jsonObject.opt(config.getcDataTagName()));
+                                  } else {
+                                      context.accumulate(tagName, jsonObject);
+                                      if(context!=null&&pointer.queryFrom(context)!=null){
+                                          System.out.println("Found it!!!");
+                                          throw x.syntaxError("We found the targe and will stop parsing this xml file!!!");
+                                      }
+                                  }
+                                  return false;
+                              ......
+    }
+  ```
+
+  In parse2 method we will judge whether the context (JSONobject) contains the JSONPointer path. if it contains the path, it will throw a Exception( sorry ,we can't find a elegant way to meet this requirement) , while outside logic will catch the Exception and stop reading more xml file which could make parse process more  efficient. 
+
+  ```java
+  public static JSONObject toJSONObject2(Reader reader,JSONPointer jsonPointer, XMLParserConfiguration config) throws JSONException {
+          JSONObject jo = new JSONObject();
+          XMLTokener x = new XMLTokener(reader);
+          while (x.more()) {
+              x.skipPast("<");
+              if(x.more()) {
+                  try {
+                      parse2(x, jo,jsonPointer, null, config);
+                  }catch (Exception exception){
+                      System.out.println("We found the targe and will stop parsing this xml file!!!");
+                      break;
+                  }
+              }
+          }
+          return jo;
+      }
+  ```
+
+  This method will catch the exception throw from parse2 method when data parse2 method process is enough for the JSONPointer. When it catch the exception, it will quit the while loop (which means reading we will stop parsing it as soon as we find the object in question). 
+
+  
 
 - Add an overloaded static method to the XML class with the signature
 
@@ -69,6 +121,10 @@ Cannot process the large file(OutOfMemory:Java Heap Space)
   ```
 
   which does, inside the library, the same thing that task 5 of milestone 1 did in client code, before writing to disk. Are there any possible performance gains from doing this inside the library? If so, implement them in your version of the library.
+
+  We do believe for replacement method, we need to read all the xml file to get the whole  JSONObject.
+
+  
 
 - You can try these methods by following command:
 

@@ -16,8 +16,8 @@ public class Milestone2 {
     public static void main(String[] args) throws IOException {
         //mvn exec:java -Dexec.mainClass="MileStone2.MileStone.Milestone2" -Dexec.args="1 src/main/resources/xml1.xml"
         //mvn exec:java -Dexec.mainClass="MileStone2.MileStone.Milestone2" -Dexec.args="2 src/main/resources/xml1.xml"
-        demo(args);
-        //test();
+        //demo(args);
+        test();
     }
 
     public static void test() throws IOException{
