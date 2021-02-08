@@ -621,7 +621,7 @@ public class XML {
     }
 
     // Author: Lai Wang
-    private static boolean parse3(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config ,XMLFunction tagfunc)
+    private static boolean parse3(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config ,YOURTYPEHERE tagfunc)
             throws JSONException {
         char c;
         int i;
@@ -1012,11 +1012,15 @@ public class XML {
         return jsonObj;
     }
 
-    public interface XMLFunction{
+//    public interface XMLFunction{
+//        public String run(String tagname);
+//    }
+
+    public interface YOURTYPEHERE{
         public String run(String tagname);
     }
 
-    public static JSONObject toJSONObject(Reader reader, XMLFunction keyTransformer) throws IOException{
+    public static JSONObject toJSONObject(Reader reader, YOURTYPEHERE keyTransformer) throws IOException{
         JSONObject object=toJSONObject(reader, XMLParserConfiguration.ORIGINAL, keyTransformer);
         Milestone2.writeToDisk(object.toString());
         return object;
@@ -1098,7 +1102,7 @@ public class XML {
         return jo;
     }
 
-    public static JSONObject toJSONObject(Reader reader, XMLParserConfiguration config,XMLFunction keyTransformer ) throws JSONException {
+    public static JSONObject toJSONObject(Reader reader, XMLParserConfiguration config,YOURTYPEHERE keyTransformer ) throws JSONException {
         JSONObject jo = new JSONObject();
         XMLTokener x = new XMLTokener(reader);
         while (x.more()) {

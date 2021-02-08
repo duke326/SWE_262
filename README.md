@@ -190,11 +190,11 @@ Cannot process the large file(OutOfMemory:Java Heap Space)
 **Our implementation:** 
 
 ```java
-    public interface XMLFunction{
+    public interface YOURTYPEHERE{
         public String run(String tagname);
     }
    
-    public static JSONObject toJSONObject(Reader reader, XMLFunction keyTransformer) throws IOException{
+    public static JSONObject toJSONObject(Reader reader, YOURTYPEHERE keyTransformer) throws IOException{
         JSONObject object=toJSONObject(reader, XMLParserConfiguration.ORIGINAL, keyTransformer);
         Milestone2.writeToDisk(object.toString());
         return object;
@@ -204,7 +204,7 @@ Cannot process the large file(OutOfMemory:Java Heap Space)
 Interface for tag-name functions.
 
 ```java
-private static boolean parse3(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config ,XMLFunction tagfunc) throws JSONException {
+private static boolean parse3(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config ,YOURTYPEHERE tagfunc) throws JSONException {
 		//..............
 						  // Nested element
                        		if (parse3(x, jsonObject, tagName, config,tagfunc)) {
@@ -239,7 +239,7 @@ In milestone3, through parse method in XML, we can process the tag-name when we 
 public class MileStone3Test {
     @Test
     public void prefixFuncTest() throws IOException {
-      	class TestFunc implements XML.XMLFunction{
+      	class TestFunc implements XML.YOURTYPEHERE{
             public String run(String tagname) {
                 String add = "SWE262_";
                 return add+tagname;
@@ -252,7 +252,7 @@ public class MileStone3Test {
         compareReaderToJSONObject(xmlStr,expStr,func);
     }
     
-    private void compareReaderToJSONObject(String xmlStr, String expectedStr , XML.XMLFunction func) throws IOException {
+    private void compareReaderToJSONObject(String xmlStr, String expectedStr , XML.YOURTYPEHERE func) throws IOException {
         JSONObject expectedJsonObject = new JSONObject(expectedStr);
         Reader reader = new StringReader(xmlStr);
         JSONObject jsonObject = XML.toJSONObject(reader,func);
@@ -262,4 +262,4 @@ public class MileStone3Test {
 }
 ```
 
-If you want to implement a new tag-name function, you could overwrite the run methods declared in XMLFunction interface.
+If you want to implement a new tag-name function, you could overwrite the run methods declared in YOURTYPEHERE interface.

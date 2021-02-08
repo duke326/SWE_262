@@ -12,7 +12,7 @@ public class MileStone3Test {
 
     @Test
     public void prefixFuncTest() throws IOException {
-        class TestFunc implements XML.XMLFunction{
+        class TestFunc implements XML.YOURTYPEHERE{
             public String run(String tagname) {
                 String add = "SWE262_";
                 return add+tagname;
@@ -62,7 +62,7 @@ public class MileStone3Test {
 
     @Test
     public void reverseFuncTest() throws IOException {
-        class TestFunc implements XML.XMLFunction{
+        class TestFunc implements XML.YOURTYPEHERE{
             public String run(String tagname) {
                 StringBuilder sb = new StringBuilder(tagname);
                 String res = sb.reverse().toString();;
@@ -111,7 +111,7 @@ public class MileStone3Test {
         compareReaderToJSONObject(xmlStr,expStr,func);
     }
 
-    private void compareReaderToJSONObject(String xmlStr, String expectedStr , XML.XMLFunction func) throws IOException {
+    private void compareReaderToJSONObject(String xmlStr, String expectedStr , XML.YOURTYPEHERE func) throws IOException {
         JSONObject expectedJsonObject = new JSONObject(expectedStr);
         Reader reader = new StringReader(xmlStr);
         JSONObject jsonObject = XML.toJSONObject(reader,func);
