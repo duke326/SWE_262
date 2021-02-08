@@ -500,6 +500,23 @@ public class JSONObject {
         return this;
     }
 
+//    // Author: Lai Wang , Yu Sun
+//    public JSONObject accumulate(String key, Object value, XML.XMLFunction func) throws JSONException {
+//        key = func.run(key);
+//        testValidity(value);
+//        Object object = this.opt(key);
+//        if (object == null) {
+//            this.put(key,
+//                    value instanceof MileStone2.json.JSONArray ? new MileStone2.json.JSONArray().put(value)
+//                            : value);
+//        } else if (object instanceof MileStone2.json.JSONArray) {
+//            ((MileStone2.json.JSONArray) object).put(value);
+//        } else {
+//            this.put(key, new MileStone2.json.JSONArray().put(object).put(value));
+//        }
+//        return this;
+//    }
+
     /**
      * Append values to the array under a key. If the key does not exist in the
      * JSONObject, then the key is put in the JSONObject with its value being a

@@ -1,3 +1,5 @@
+
+
 # SWE_262
 
 Created by Lai Wang and Yu Sun 
@@ -19,7 +21,7 @@ Cannot process the large file(OutOfMemory:Java Heap Space)
 
 - Fork the [JSON org project in Github (Links to an external site.)](https://github.com/stleary/JSON-java) and make it "your own."
 
-- Add an overloaded static method to the XML class with the signature
+- Add an overloaded static method to the XML class with the signature (marked with // Author: Lai Wang Yu Sun)
 
   ```java
   public static JSONObject toJSONObject(Reader reader, JSONPointer path) throws IOException {
@@ -159,3 +161,105 @@ Cannot process the large file(OutOfMemory:Java Heap Space)
   public void shouldHandleSimpleXML2()
   private void compareReaderToJSONObject2(String xmlStr, String replaceStr, String expectedStr , JSONPointer jsonPointer)
   ```
+
+
+
+### MileStone3
+
+- Add an overloaded static method to the XML class with the signature
+
+  ```
+  static JSONObject toJSONObject(Reader reader, YOURTYPEHERE keyTransformer) 
+  ```
+
+  which does, inside the library, the kinds of things you did in task 4 of milestone 1, but in a much more general manner, for any transformations of keys. Specifically, YOURTYPEHERE should be a function (or "functional" in Java) that takes as input a String denoting a key and returns another String that is the transformation of the key. For example:
+
+  ```
+  "foo" --> "swe262_foo" 
+  "foo" --> "oof"
+  ```
+
+  Remember, these are functions provided by the client code, so they can be quite powerful and include all sorts of string matching and transformation logic.
+
+  The goal here is that you do the transformation during the parsing of the XML file, not in another pass afterwards. 
+
+- In a README file, comment on the performance implications of doing this inside the library vs. doing it in client code, as you did in Milestone 1. 
+
+- Write unit tests for your new function.
+
+**Our implementation:** 
+
+```java
+    public interface XMLFunction{
+        public String run(String tagname);
+    }
+   
+    public static JSONObject toJSONObject(Reader reader, XMLFunction keyTransformer) throws IOException{
+        JSONObject object=toJSONObject(reader, XMLParserConfiguration.ORIGINAL, keyTransformer);
+        Milestone2.writeToDisk(object.toString());
+        return object;
+    }
+```
+
+Interface for tag-name functions.
+
+```java
+private static boolean parse3(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config ,XMLFunction tagfunc) throws JSONException {
+		//..............
+						  // Nested element
+                       		if (parse3(x, jsonObject, tagName, config,tagfunc)) {
+                                if (jsonObject.length() == 0) {
+                                    tagName = tagfunc.run(tagName);
+                                    context.accumulate(tagName, "");
+                                } else if (jsonObject.length() == 1
+                                        && jsonObject.opt(config.getcDataTagName()) != null) {
+                                    tagName = tagfunc.run(tagName);
+                                    context.accumulate(tagName, jsonObject.opt(config.getcDataTagName()));
+                                } else {
+                                    tagName = tagfunc.run(tagName);
+                                    context.accumulate(tagName, jsonObject);
+                                }
+                                return false;
+                            }
+       //...................
+}
+```
+
+In milestone3 our group implement a special parse method (parse3). A function parameter will pass into this method, which indicates what change we will make on tag like reverse or add prefix. Most important thing is we need use tag function before we pass the tagName into accumulate method and we need call parse3 method in if judgment to make this change is apply to every line of jsonObject.
+
+**Comments on performance implications**:
+
+In milestone1, in order to meet this requirement, we need to produce the jsonObject through xml file and then we can process with DFS to go through the whole jsonObject and process the tag-name. 
+
+In milestone3, through parse method in XML, we can process the tag-name when we are building the JsonObject, which ensure the performance.
+
+**Unit Test**: 
+
+```java
+public class MileStone3Test {
+    @Test
+    public void prefixFuncTest() throws IOException {
+      	class TestFunc implements XML.XMLFunction{
+            public String run(String tagname) {
+                String add = "SWE262_";
+                return add+tagname;
+            }
+        };
+        
+        String xmlStr ="...";
+        String expStr ="...";
+        TestFunc func = new TestFunc();
+        compareReaderToJSONObject(xmlStr,expStr,func);
+    }
+    
+    private void compareReaderToJSONObject(String xmlStr, String expectedStr , XML.XMLFunction func) throws IOException {
+        JSONObject expectedJsonObject = new JSONObject(expectedStr);
+        Reader reader = new StringReader(xmlStr);
+        JSONObject jsonObject = XML.toJSONObject(reader,func);
+        System.out.println(jsonObject.toString(FACTOR));
+        Util.compareActualVsExpectedJsonObjects(jsonObject,expectedJsonObject);
+    }
+}
+```
+
+If you want to implement a new tag-name function, you could overwrite the run methods declared in XMLFunction interface.
