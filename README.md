@@ -17,6 +17,8 @@ Example Demo Command Line :
         Q5: mvn exec:java -Dexec.mainClass="MileStone1.Milestone1" -Dexec.args="5 src/main/resources/xml1.xml /catalog/book/0/author"
 Cannot process the large file(OutOfMemory:Java Heap Space)		
 
+Or you can try the unit Test in MileStone1Test.java
+
 ### MileStone2
 
 - Fork the [JSON org project in Github (Links to an external site.)](https://github.com/stleary/JSON-java) and make it "your own."
