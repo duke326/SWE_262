@@ -368,5 +368,6 @@ obj.toStream().forEach(node -> {if(node.has("description"))System.out.println(no
 obj.toStream().filter(node -> node.has("author")).forEach(node -> System.out.println(node.toString()));
 List<String> titles = obj.toStream().filter(node -> node.has("title")).map(node ->(String) node.get("title")
         ).collect(Collectors.toList());
+obj.toStream().filter(node -> ((String)node.get("path")).contains("/catalog/book/0/")).forEach(node -> System.out.println(node.toString()));
 ```
 

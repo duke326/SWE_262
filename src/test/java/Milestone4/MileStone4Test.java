@@ -145,5 +145,35 @@ public class MileStone4Test {
         obj.toStream().filter(node -> node.has("author")).forEach(node -> System.out.println(node.toString()));
     }
 
+    @Test
+    public void filterTest2(){
+        System.out.println("~~~~~~~~~~filterTest~~~~~~~~~~");
+        String xml = "<?xml version=\"1.0\"?>\n" +
+                "<catalog>\n" +
+                "   <book id=\"bk101\">\n" +
+                "      <author>Gambardella, Matthew</author>\n" +
+                "      <title>XML Developer's Guide</title>\n" +
+                "      <genre>Computer</genre>\n" +
+                "      <price>44.95</price>\n" +
+                "      <publish_date>2000-10-01</publish_date>\n" +
+                "      <description>An in-depth look at creating applications \n" +
+                "      with XML.</description>\n" +
+                "   </book>\n" +
+                "   <book id=\"bk102\">\n" +
+                "      <author>Ralls, Kim</author>\n" +
+                "      <title>Midnight Rain</title>\n" +
+                "      <genre>Fantasy</genre>\n" +
+                "      <price>5.95</price>\n" +
+                "      <publish_date>2000-12-16</publish_date>\n" +
+                "      <description>A former architect battles corporate zombies, \n" +
+                "      an evil sorceress, and her own childhood to become queen \n" +
+                "      of the world.</description>\n" +
+                "   </book>\n"+
+                "</catalog>\n";
+        //JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        JSONObject obj = XML.toJSONObject(xml);
+        obj.toStream().filter(node -> ((String)node.get("path")).contains("/catalog/book/0/")).forEach(node -> System.out.println(node.toString()));
+    }
+
 
 }
