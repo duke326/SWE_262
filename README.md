@@ -189,7 +189,7 @@ Or you can try the unit Test in MileStone1Test.java
 
 - Write unit tests for your new function.
 
-**Our implementation:** 
+#### **Our implementation:** 
 
 ```java
     public interface YOURTYPEHERE{
@@ -235,7 +235,7 @@ In milestone1, in order to meet this requirement, we need to produce the jsonObj
 
 In milestone3, through parse method in XML, we can process the tag-name when we are building the JsonObject, which ensure the performance.
 
-**Unit Test**: 
+#### **Unit Test**: 
 
 ```java
 public class MileStone3Test {
@@ -265,3 +265,108 @@ public class MileStone3Test {
 ```
 
 If you want to implement a new tag-name function, you could overwrite the run methods declared in YOURTYPEHERE interface.
+
+
+
+### MileStone4
+
+- Add streaming methods to the library that allow the client code to chain operations **on JSON nodes**. For example:
+
+  ```
+  // in client space
+  JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+  obj.toStream().forEach(node -> do some transformation, possibly based on the path of the node);
+  List<String> titles = obj.toStream().map(node -> extract value for key "title").collect(Collectors.toList());
+  obj.toStream().filter(node -> node with certain properties).forEach(node -> do some transformation);
+  ```
+
+  These stream operations apply to JSONObject, and are started by transforming those objects into streams with the new toStream() method, that you should write. Given that XML and JSON are hierarchical structures, you need to think about the type of stream you want to support. E.g. top-level elements only, every element independent of nesting, etc. There can be many options. The critical thing here is that, unless the client code explicitly collects the data into an object, the data should simply flow in small parts to the next operation.
+
+- Write unit tests for your new function(s)
+
+#### **Our implementation:** 
+
+For the Stream type, we choose JSONObject of every leaf node. 
+
+We implement a toStream method in JSONObject.java to meet this requirement.
+
+It will return a Stream<JSONObject> obj as we call toStream() method. 
+
+```java
+    public Stream<JSONObject> toStream(){
+        List<JSONObject> list = new LinkedList<>();
+        StringBuilder sb = new StringBuilder();
+        analysisJson2(this,list,sb);
+        JSONObject[] objArr = list.toArray(new JSONObject[list.size()]);
+        Stream<JSONObject> stream = Stream.of(objArr);
+        return stream;
+    }
+```
+
+We used dfs to search every leaf node and for each leaf we get from JSONObject, we will record its path which can indicate father node it belongs to.
+
+```java
+    public void  analysisJson(Object objJson,List<JSONObject> list,StringBuilder sb){
+        //if obj is jsonarray
+        Set<String> deleteSet = new HashSet();
+        if(objJson instanceof JSONArray){
+            JSONArray objArray = (JSONArray)objJson;
+            for (int i = 0; i < objArray.length(); i++) {
+                sb.append("/"+i);
+                analysisJson(objArray.get(i),list,sb);
+                sb.delete(sb.length()-2,sb.length());
+            }
+        }
+        //if obj is jsonobject
+        else if(objJson instanceof JSONObject){
+            JSONObject jsonObject = (JSONObject)objJson;
+            Iterator it = jsonObject.keys();
+            while(it.hasNext()){
+                String key = it.next().toString();
+                Object object = jsonObject.get(key);
+
+                //if we get array
+                if(object instanceof JSONArray){
+                    //list.add(object);
+                    JSONArray objArray = (JSONArray)object;
+                    sb.append("/"+key);
+                    analysisJson(objArray,list,sb);
+                    sb.delete(sb.length()-1-key.length(),sb.length());
+                }
+                //if we get the jsonobjet
+                else if(object instanceof JSONObject){
+                    //list.add((JSONObject)object);
+                    sb.append("/"+key);
+                    analysisJson((JSONObject)object,list,sb);
+                    sb.delete(sb.length()-1-key.length(),sb.length());
+                }
+                //String elements
+                else{
+                    deleteSet.add(key);
+                }
+            }
+            for (String key : deleteSet){
+                sb.append("/"+key);
+                JSONObject jsonObj = new JSONObject();
+                Object object = jsonObject.get(key);
+                jsonObj.put(key,object);
+                jsonObj.put("path",sb.toString());
+                list.add(jsonObj);
+                sb.delete(sb.length()-1-key.length(),sb.length());
+            }
+        }
+    }
+```
+
+#### **Unit Test**: 
+
+Stream function we test includes foreach, map , filter:
+
+```java
+JSONObject obj = XML.toJSONObject(xml);
+obj.toStream().forEach(node -> {if(node.has("description"))System.out.println(node.toString());});
+obj.toStream().filter(node -> node.has("author")).forEach(node -> System.out.println(node.toString()));
+List<String> titles = obj.toStream().filter(node -> node.has("title")).map(node ->(String) node.get("title")
+        ).collect(Collectors.toList());
+```
+

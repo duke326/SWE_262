@@ -40,16 +40,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its external
@@ -1648,8 +1642,7 @@ public class JSONObject {
      * implementations and interfaces has the annotation. Returns the depth of the
      * annotation in the hierarchy.
      *
-     * @param <A>
-     *            type of the annotation
+     *
      *
      * @param m
      *            method to check
@@ -2665,5 +2658,66 @@ public class JSONObject {
         return new JSONException(
                 "JSONObject[" + quote(key) + "] is not a " + valueType + " (" + value + ")."
                 , cause);
+    }
+
+    // Author Lai Wang
+    public Stream<JSONObject> toStream(){
+        List<JSONObject> list = new LinkedList<>();
+        StringBuilder sb = new StringBuilder();
+        analysisJson(this,list,sb);
+        JSONObject[] objArr = list.toArray(new JSONObject[list.size()]);
+        Stream<JSONObject> stream = Stream.of(objArr);
+        return stream;
+    }
+
+    public void  analysisJson(Object objJson,List<JSONObject> list,StringBuilder sb){
+        //if obj is jsonarray
+        Set<String> deleteSet = new HashSet();
+        if(objJson instanceof JSONArray){
+            JSONArray objArray = (JSONArray)objJson;
+            for (int i = 0; i < objArray.length(); i++) {
+                sb.append("/"+i);
+                analysisJson(objArray.get(i),list,sb);
+                sb.delete(sb.length()-2,sb.length());
+            }
+        }
+        //if obj is jsonobject
+        else if(objJson instanceof JSONObject){
+            JSONObject jsonObject = (JSONObject)objJson;
+            Iterator it = jsonObject.keys();
+            while(it.hasNext()){
+                String key = it.next().toString();
+                Object object = jsonObject.get(key);
+
+                //if we get array
+                if(object instanceof JSONArray){
+                    //list.add(object);
+                    JSONArray objArray = (JSONArray)object;
+                    sb.append("/"+key);
+                    analysisJson(objArray,list,sb);
+                    sb.delete(sb.length()-1-key.length(),sb.length());
+                }
+                //if we get the jsonobjet
+                else if(object instanceof JSONObject){
+                    //list.add((JSONObject)object);
+                    sb.append("/"+key);
+                    analysisJson((JSONObject)object,list,sb);
+                    sb.delete(sb.length()-1-key.length(),sb.length());
+                }
+                //String elements
+                else{
+                    deleteSet.add(key);
+                }
+            }
+            for (String key : deleteSet){
+                sb.append("/"+key);
+                JSONObject jsonObj = new JSONObject();
+                Object object = jsonObject.get(key);
+                jsonObj.put(key,object);
+                jsonObj.put("path",sb.toString());
+                list.add(jsonObj);
+                sb.delete(sb.length()-1-key.length(),sb.length());
+            }
+        }
     }
 }
