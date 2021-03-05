@@ -34,6 +34,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
+import java.util.concurrent.*;
 
 
 /**
@@ -970,6 +971,26 @@ public class XML {
      */
     public static JSONObject toJSONObject(Reader reader) throws JSONException {
         return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
+    }
+
+    static class FutureTask implements Callable<JSONObject>{
+        Reader reader;
+        public FutureTask(Reader reader){
+            this.reader = reader;
+        }
+
+        @Override
+        public JSONObject call() throws Exception {
+            return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
+        }
+    }
+
+    public static Future<JSONObject> toJSONObjectFuture(Reader reader) throws JSONException {
+        FutureTask task = new FutureTask(reader);
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        Future<JSONObject> future = threadPool.submit(task);
+//        Thread thread = new Thread(task);
+        return future;
     }
 
 

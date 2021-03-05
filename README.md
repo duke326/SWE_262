@@ -371,3 +371,73 @@ List<String> titles = obj.toStream().filter(node -> node.has("title")).map(node 
 obj.toStream().filter(node -> ((String)node.get("path")).contains("/catalog/book/0/")).forEach(node -> System.out.println(node.toString()));
 ```
 
+
+
+### MileStone5
+
+- Add asynchronous methods to the library that allow the client code to proceed, while specifying what to do when the JSONObject becomes available. This is useful for when reading very large files. For example,
+
+  ```
+  XML.toJSONObject(aReader, (JSONObject jo) -> {jo.write(aWriter);}, (Exception e) -> {/* something went wrong */});
+  ```
+
+- Write unite tests for your new function(s)
+
+#### Our implementation:
+
+```java
+	static class FutureTask implements Callable<JSONObject>{
+        Reader reader;
+        public FutureTask(Reader reader){
+            this.reader = reader;
+        }
+
+        @Override
+        public JSONObject call() throws Exception {
+            return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
+        }
+    }
+
+    public static Future<JSONObject> toJSONObjectFuture(Reader reader) throws JSONException {
+        FutureTask task = new FutureTask(reader);
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        Future<JSONObject> future = threadPool.submit(task);
+//        Thread thread = new Thread(task);
+        return future;
+    }
+```
+
+In this part, we implement a FutureTask which implements callable interface. When we call toJSONObjectFuture method, we will instantly get a Future callback, while at mean time the thread in the toJSONObjectFuture method will constantly process the jsonObject.
+
+#### Unit Test:
+
+We write unit test in the MileStone5Test.java.
+
+```java
+        Reader reader = new StringReader(xml);
+        try{
+            Future<JSONObject> future = XML.toJSONObjectFuture(reader);
+            while(!future.isDone()){
+                System.out.println("not yet");
+                Thread.sleep(1000);
+            }
+            writeToDisk(future.get().toString(FACTOR));
+            System.out.println(future.get().toString(FACTOR));
+```
+
+We have two test method, one for small xml and one for big xml. For small xml test, before processing data is done, we will constantly print not yet, and after task is finish, we will write data into the output.json file, also we print the result.
+
+```java
+File file = new File("D:/uci/SWE262/src/enwiki-20210220-abstract3.xml");
+        FileReader reader = new FileReader(file);
+        try{
+            Future<JSONObject> future = XML.toJSONObjectFuture(reader);
+            while(!future.isDone()){
+                System.out.println("not yet");
+                Thread.sleep(1000);
+            }
+            writeToDisk(future.get().toString(FACTOR));
+            System.out.println(future.get().toString(FACTOR));
+```
+
+Same thing for big file test, but we hard code the path and it will take about 60 seconds to process data.
