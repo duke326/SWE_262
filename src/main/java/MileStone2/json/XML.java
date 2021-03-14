@@ -973,27 +973,9 @@ public class XML {
         return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
     }
 
-    static class FutureTask implements Callable<JSONObject>{
-        Reader reader;
-        public FutureTask(Reader reader){
-            this.reader = reader;
-        }
-
-        @Override
-        public JSONObject call() throws Exception {
-            return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
-        }
-    }
-
-    public static Future<JSONObject> toJSONObjectFuture(Reader reader) throws JSONException {
-        FutureTask task = new FutureTask(reader);
-        ExecutorService threadPool = Executors.newSingleThreadExecutor();
-        Future<JSONObject> future = threadPool.submit(task);
-//        Thread thread = new Thread(task);
-        return future;
-    }
 
 
+    // ~~~~~~~~~Milestone 2~~~~~~~~~~~~~~
     // Author: Lai Wang, Yu Sun
     public static JSONObject toJSONObject(Reader reader, JSONPointer path) throws IOException {
          JSONObject jsonObject=toJSONObject2(reader, path,XMLParserConfiguration.ORIGINAL);
@@ -1002,7 +984,8 @@ public class XML {
          return (JSONObject) object;
     }
 
-    // Author: Lai Wang
+
+    // Author: Lai Wang, Yu Sun
     public static JSONObject toJSONObject(Reader reader, JSONPointer path,JSONObject replacement) throws IOException {
         JSONObject jsonObj=toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
         JSONObject replaceObj = replacement;
@@ -1041,11 +1024,39 @@ public class XML {
         public String run(String tagname);
     }
 
+
+    // ~~~~~~~~~Milestone 3~~~~~~~~~~~~~~
+    // Author: Lai Wang, Yu Sun
     public static JSONObject toJSONObject(Reader reader, YOURTYPEHERE keyTransformer) throws IOException{
         JSONObject object=toJSONObject(reader, XMLParserConfiguration.ORIGINAL, keyTransformer);
         Milestone2.writeToDisk(object.toString());
         return object;
     }
+
+
+    // ~~~~~~~~~Milestone 5~~~~~~~~~~~~~~
+    // Author: Lai Wang, Yu Sun
+    static class FutureTask implements Callable<JSONObject>{
+        Reader reader;
+        public FutureTask(Reader reader){
+            this.reader = reader;
+        }
+
+        @Override
+        public JSONObject call() throws Exception {
+            return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
+        }
+    }
+
+    // Author: Lai Wang, Yu Sun
+    public static Future<JSONObject> toJSONObjectFuture(Reader reader) throws JSONException {
+        FutureTask task = new FutureTask(reader);
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        Future<JSONObject> future = threadPool.submit(task);
+//        Thread thread = new Thread(task);
+        return future;
+    }
+
 
     public static JSONObject toJSONObjectTest(Reader reader){
 
